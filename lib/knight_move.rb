@@ -27,8 +27,14 @@ class KnightMove
   end
 
   def to_target
+    return @path.map(&:join).join('-') if reached?
+    return nil if maxed?
+    next_moves.map {|next_move|
+      self.class.new(@path + [ next_move ], @target).to_target
+    }.compact.flatten.sort_by(&:length)
   end
 
+  protected
   def next_moves
     ORIENTATIONS.map { |v, h|
       [move_vertically(@current[0], v), move_horizontal(@current[1], h)]
@@ -37,7 +43,6 @@ class KnightMove
     }
   end
 
-  protected
   def square_valid?(square)
     VERTICAL_RANGE.cover?(square[0]) &&
       HORIZONTAL_RANGE.cover?(square[1])
@@ -53,5 +58,9 @@ class KnightMove
 
   def move_vertically(v_char, step)
     (v_char.ord + step).chr
+  end
+
+  def reached?
+    @current == @target
   end
 end
