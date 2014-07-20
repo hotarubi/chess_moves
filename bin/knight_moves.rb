@@ -18,7 +18,11 @@ unless input.length == 2 && input.all? {|a| /^[a-z]\d+$/ =~ a }
   exit
 end
 
-puts KnightMove.new(
-  [ convert.call(input[0]) ],
-  convert.call(input[1])
-).to_target
+begin
+  puts KnightMove.new(
+    [ convert.call(input[0]) ],
+    convert.call(input[1])
+  ).to_target
+rescue Move::OutOfChessboard, Move::InvalidTarget => e
+  puts e.message
+end
